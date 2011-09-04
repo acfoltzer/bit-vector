@@ -1,0 +1,17 @@
+Name:                bit-vector
+Version:             0.1.0
+Synopsis:            Simple bit vectors for Haskell
+Homepage:            https://github.com/acfoltzer/bit-vector
+License:             BSD3
+License-file:        LICENSE
+Author:              Adam C. Foltzer
+Maintainer:          acfoltzer@gmail.com
+Category:            Data
+Build-type:          Simple
+Cabal-version:       >=1.2
+
+Library
+  Exposed-modules:   Data.Vector.Bit
+  Hs-source-dirs:    src
+  Build-depends:     base == 4.*,
+                     vector == 0.8.*
