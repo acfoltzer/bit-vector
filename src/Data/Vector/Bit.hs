@@ -74,7 +74,7 @@ instance Num BitVector where
     where
       partials = zipWith shiftMult (V.toList as) [0 ..]
       shiftMult True i  = bs `shiftL` i
-      shiftMult False i = V.empty
+      shiftMult False _ = V.empty
   as - bs = trimLeading $ V.take (V.length as') (rawSum + 1)
     where
       rawSum     = as' + complement bs'
@@ -118,6 +118,7 @@ unpackInteger = V.unfoldr f
     f (flip divMod 2 -> (0, 0)) = Nothing
     f (flip divMod 2 -> (q, 0)) = Just (False, q)
     f (flip divMod 2 -> (q, 1)) = Just (True, q)
+    f _                         = error "unexpected remainder when unpacking"
 
 packInteger :: BitVector -> Integer
 packInteger = pack

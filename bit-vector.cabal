@@ -10,12 +10,17 @@ Category:            Data
 Tested-With:         GHC==7.0.4, GHC==7.2.1
 Build-type:          Simple
 Cabal-version:       >=1.8
+extra-source-files:  README.md 
 
 Library
   Exposed-modules:   Data.Vector.Bit
   Hs-source-dirs:    src
   Build-depends:     base == 4.*,
                      vector == 0.9.*
+  ghc-options:       -Wall
+                     -- orphans are kind of the point
+                     -fno-warn-orphans
+                     -O2
                      
 Test-Suite Tests
   Type:		     exitcode-stdio-1.0
