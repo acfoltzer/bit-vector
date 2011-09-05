@@ -11,7 +11,7 @@ prop_packUnpack x | x >= 0 = pack (unpack x) == x
 prop_unpackPack :: [Bool] -> Bool
 prop_unpackPack xs 
     | length xs < 64 && (pack (V.fromList xs') :: Int) >= 0 
-    = unpack (pack (V.fromList xs') :: Int) == (V.fromList xs')
+    = unpack (pack (V.fromList xs') :: Int) == V.fromList xs'
     | otherwise = True
   where xs' = reverse . dropWhile not . reverse $ xs
 
@@ -26,7 +26,7 @@ prop_subCorrect x y | x >= y = x - y == pack (unpack x - unpack y)
                     | otherwise = True
 
 prop_absSignum :: Int -> Bool
-prop_absSignum x | x >= 0 = abs (unpack x) * signum (unpack x) == (unpack x)
+prop_absSignum x | x >= 0 = abs (unpack x) * signum (unpack x) == unpack x
                  | otherwise = True
 
 main = defaultMain tests
