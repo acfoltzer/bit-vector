@@ -101,6 +101,11 @@ instance Bits BitVector where
     where (low, high) = V.splitAt (V.length v - i) v
   bitSize     = V.length
   isSigned    = const False
+  bit i       = V.replicate i False `V.snoc` True
+  testBit v i = case (v V.!? i) of
+    Just x  -> x
+    Nothing -> False
+  popCount v  = V.length $ V.filter id v
 
 -- | Converts an instance of 'Bits' to a 'BitVector'. 
 --
