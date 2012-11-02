@@ -57,6 +57,11 @@ padMax xs ys = (padlen xs, padlen ys)
 zipPad :: BitVector -> BitVector -> V.Vector (Bool, Bool)
 zipPad xs ys = uncurry V.zip (padMax xs ys)
 
+-- | Like 'V.zipWith', except pads the vectors to equal length
+-- rather than discarding elements of the longer vector.
+zipPadWith :: V.Unbox a => (Bool -> Bool -> a) -> BitVector -> BitVector -> V.Vector a
+zipPadWith f xs ys = uncurry (V.zipWith f) (padMax xs ys)
+
 -- | Discards any 'False' values at the most-significant end of the
 -- given 'BitVector'.
 trimLeading :: BitVector -> BitVector
