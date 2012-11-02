@@ -107,10 +107,12 @@ unpack w = trimLeading $ V.generate (bitSize w) (testBit w)
 
 -- | Converts a 'BitVector' to an instance of 'Bits'.
 pack :: (Bits a) => BitVector -> a
-pack v = V.ifoldl' set 0 v
+pack v = V.ifoldl' set zero v
   where
     set w i True = w `setBit` i
     set w _ _    = w
+    -- Currently the best way to represent an empty Bits instance (Ugh)
+    zero = clearBit (bit 0) 0
 
 unpackInteger :: Integer -> BitVector
 unpackInteger = V.unfoldr f
