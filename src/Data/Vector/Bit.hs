@@ -28,7 +28,7 @@ module Data.Vector.Bit (
   unpackInteger, packInteger, unpackInt, packInt,
 
   -- * Utilities
-  pad, padMax, zipPad, trimLeading
+  pad, padMax, zipPad, zipPadWith, trimLeading
   )
 
 where
@@ -56,6 +56,11 @@ padMax xs ys = (padlen xs, padlen ys)
 -- rather than discarding elements of the longer vector.
 zipPad :: BitVector -> BitVector -> V.Vector (Bool, Bool)
 zipPad xs ys = uncurry V.zip (padMax xs ys)
+
+-- | Like 'V.zipWith', except pads the vectors to equal length
+-- rather than discarding elements of the longer vector.
+zipPadWith :: V.Unbox a => (Bool -> Bool -> a) -> BitVector -> BitVector -> V.Vector a
+zipPadWith f xs ys = uncurry (V.zipWith f) (padMax xs ys)
 
 -- | Discards any 'False' values at the most-significant end of the
 -- given 'BitVector'.
@@ -85,8 +90,8 @@ instance Num BitVector where
 
 instance Bits BitVector where
   (.&.)       = V.zipWith (&&)
-  (.|.)       = V.zipWith (||)
-  xor         = V.zipWith (/=)
+  (.|.)       = zipPadWith (||)
+  xor         = zipPadWith (/=)
   complement  = V.map not
   shiftL v i  = V.replicate i False V.++ v
   shiftR      = flip V.drop
@@ -96,6 +101,11 @@ instance Bits BitVector where
     where (low, high) = V.splitAt (V.length v - i) v
   bitSize     = V.length
   isSigned    = const False
+  bit i       = V.replicate i False `V.snoc` True
+  testBit v i = case (v V.!? i) of
+    Just x  -> x
+    Nothing -> False
+  popCount v  = V.length $ V.filter id v
 
 -- | Converts an instance of 'Bits' to a 'BitVector'. 
 --
@@ -107,10 +117,12 @@ unpack w = trimLeading $ V.generate (bitSize w) (testBit w)
 
 -- | Converts a 'BitVector' to an instance of 'Bits'.
 pack :: (Bits a) => BitVector -> a
-pack v = V.ifoldl' set 0 v
+pack v = V.ifoldl' set zero v
   where
     set w i True = w `setBit` i
     set w _ _    = w
+    -- Currently the best way to represent an empty Bits instance (Ugh)
+    zero = clearBit (bit 0) 0
 
 unpackInteger :: Integer -> BitVector
 unpackInteger = V.unfoldr f
