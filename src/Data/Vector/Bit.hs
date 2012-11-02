@@ -90,8 +90,8 @@ instance Num BitVector where
 
 instance Bits BitVector where
   (.&.)       = V.zipWith (&&)
-  (.|.)       = V.zipWith (||)
-  xor         = V.zipWith (/=)
+  (.|.)       = zipPadWith (||)
+  xor         = zipPadWith (/=)
   complement  = V.map not
   shiftL v i  = V.replicate i False V.++ v
   shiftR      = flip V.drop
