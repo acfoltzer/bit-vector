@@ -1,5 +1,5 @@
 Name:                bit-vector
-Version:             0.1.0
+Version:             0.2.0
 Synopsis:            Simple bit vectors for Haskell
 Description:         Operations for using a vector of Booleans as a bit vector. Intended more for pedagogical purposes than for serious applications
 Homepage:            https://github.com/acfoltzer/bit-vector
